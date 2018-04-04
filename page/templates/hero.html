@@ -1,0 +1,62 @@
+{% load staticfiles %}
+<h1 id="message"> {{message}} </h1>
+<img id="heroImg"> </img>
+<form method="POST" action="/">
+{% csrf_token %}
+    <select id="hero">
+        {%for her in heroes%}
+            <option value={{her.id}}> {{her.name}} </option>
+        {%endfor%}
+            <option value="add"> Add new </option>
+    </select>
+</form>
+<script src={% static "jquery-3.1.1.min.js" %}></script>
+    <script>
+        $(document).ready(function() {
+        $("#hero option").change(function () {
+            var data={};
+
+        });       
+        $("#hero option").filter(function () {return $(this).val()==localStorage.getItem('hero_id')}).prop('selected',true);
+        var csrftoken = getCookie('csrftoken');
+        $("#hero").change(function() {
+                        var data ={};
+            if ($("#hero option:selected").val()=="add") {
+                var data={};
+                data['type']="hero";
+                data['name'] = prompt("Type hero name");
+                $.ajax({
+                    url:'#',
+                    type:"POST",
+                    data:data,
+                    dataType:"json",
+                    headers:{"X-CSRFToken": csrftoken},
+                    success:function(data){
+                    location.reload();
+                    localStorage.setItem('hero_id', data['hero_id']);      
+                    },
+                    error:function(data){
+                        return(false);
+                    }
+                })
+            }
+            else {
+                data['type']="selHero";
+                data['hero_id']=$("#hero option:selected").val();
+                $.ajax({
+                    url:'#',
+                    type:"POST",
+                    data:data,
+                    dataType:"json",
+                    headers:{"X-CSRFToken": csrftoken},
+                    success:function(data){
+                        $("#heroImg").attr("src",data['heroSelUrl']);
+                    },
+                    error:function(data){
+                        return(false);
+                    }
+                })
+            }
+        });
+    });
+    </script>

@@ -1,0 +1,152 @@
+@charset "utf-8"; 
+body { 
+margin: 0 auto; 
+padding: 0px; 
+width: 1390px;
+background: #f5f5f5 url("bg4.jpg") top repeat-x;
+}
+header { 
+text-align: center; 
+border-bottom: 1px #cccccc solid; 
+
+}
+#headImg {
+ 
+   background: #f5f5f5 url("head.jpg") top repeat-y; 
+   width:1269px;
+   height: 300px;
+       margin-left: 120px;
+}
+header hl { 
+margin: 20px 0px 20px 0px; 
+letter-spacing: 0.2em; 
+}
+nav {
+    margin-left:120px;
+    border-radius: 10px;
+    height:50px;
+    background: linear-gradient(to bottom, #fdf5fd 0%,#fdcdef 50%,#febce8 51%,#ffb7e9 100%);
+}
+.menu {
+font-family: "Comic Sans MS";
+}
+.menu ul {
+}
+.menu li{
+    border-left:1px solid gray;
+        list-style:none; 
+    text-transform: uppercase;
+    margin-bottom:10px;
+    margin-top:10px;
+    float:left;
+    font-size:1.5em;
+}
+.menu li:first-child {
+    border-left:none;
+}
+.menu li a {
+        margin:0px 90px 0px 90px;
+        color: black;
+}
+.menu > li:hover {
+        margin-bottom:7px;
+        border-bottom:3px solid orange;
+}
+.menu li li {
+    border-left:none;
+    margin-top:8px;
+    margin-left:0px;
+    float:left;
+    width:200px;
+    text-transform: none;
+    font:normal 0.8em Arial;
+}
+.menu_add {
+    position:absolute;
+        background: #ffcdef;
+    position:absolute;
+    height:200px;
+    width:300px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    
+}
+.menu_add li:first-child {
+    margin-top:5px;
+}
+a {
+        text-decoration:none;
+}
+#leftmenu { 
+margin-top:20px;
+margin-right:10px;
+text-transform: uppercase;
+float: left; 
+width: 120px; 
+}
+#leftmenu ul { 
+margin: 0px; 
+padding: 0px; 
+}
+#leftmenu ul li {
+list-style-type: none; 
+padding: 15px 0px; 
+text-align:center;
+background: linear-gradient(to bottom, #febbbb 0%,#fe9090 45%,#ff5c5c 100%);
+}
+#leftmenu ul li:first-child {
+border-top-left-radius:10px;
+border-top-right-radius:10px;
+}
+#leftmenu ul li:last-child {
+border-bottom-left-radius:10px;
+border-bottom-right-radius:10px;
+}
+#leftmenu ul li a {
+color: white;
+
+}
+#leftmenu ul li:hover {
+cursor:pointer;
+background: linear-gradient(to bottom, #ff5c5c -1%,#ff5c5c 0%,#fe9090 49%,#febbbb 100%,#febbbb 100%);
+}
+#leftmenu ul li:hover a{
+color:green;
+}
+#main { 
+margin-left: 125px; 
+border-left: 1px #cccccc solid; 
+padding: 10px; 
+}
+#main h2 { 
+margin: 0px 0px 10px 0px; 
+}
+#main table { 
+width: 100%; 
+border-collapse: collapse; 
+}
+#main table td, #main table th {
+border: 1px #666666 solid; 
+padding: 5px; 
+}
+#main table td.centered {
+text-align: center; 
+}
+#main p.category { 
+font-weight: bold; 
+}
+#main p.not-in-stock {
+color: #FF0000; 
+}
+.space {
+    margin:0px;
+    	clear:both;
+}
+footer { 
+text-align: right; 
+border-top: 1px #cccccc solid; 
+padding:20px 0;
+}
+footer p { 
+font-size: smaller; 
+font-style: italic;
+} 

@@ -1,0 +1,82 @@
+<!DOCTYPE html> 
+{% load staticfiles %}
+<html> 
+    <head> 
+        <meta http-equiv="Content-Type" content="text/html" charset="utf-8"> 
+        <link type="text/css" href= {% static "main.css" %} rel="stylesheet"> 
+        <title>{% block title %}{% endblock %} :: Готовка</title> 
+    </head> 
+    <body> 
+        <header> 
+            <div id="headImg">
+            </div>
+            <div> why? </div>
+                                <div id="slider">test</div>
+                                <div> why? </div>
+            <nav>
+                <ul class="menu">
+                    <li><a href="/goods/">Главная</a> <div class="menu_add" style="display:none"> <ul> <li> test1 </li> <li> test2 </li> </ul> <div> </li>
+                    <li><a href="#">Категории</a></li>
+                    <li><a href="/goods/offer">Заказ</a></li>
+                    <li><a href="#">Контакты</a></li>
+                </ul>
+            </nav>
+            <div class="space">
+            </div>
+        </header> 
+        <div id="leftmenu"> 
+            <ul> 
+                {% for cat in cats %} 
+                <li><a href="/goods/{{ cat.id }}/">{{ cat.name }}</a></li> 
+                {% endfor %} 
+            </ul> 
+        </div> 
+        <div id="main"> 
+            {% block main %} 
+            {% endblock %} 
+        </div> 
+        <div class="space">
+        </div>
+        <footer> 
+            <p>All rights reserved.</p> 
+        </footer> 
+    </body> 
+    <script src={% static "jquery-3.1.1.min.js" %}></script>
+        <script src={% static "jquery-ui.js" %}></script>
+    <script>
+    $(document).ready(function() {
+    var getSelectedText = function() {
+    var text = '';
+    if (window.getSelection) {
+        text = window.getSelection().toString();
+    } else if (document.selection) {
+        text = document.selection.createRange().text;
+    }
+    return text;
+}
+
+$('table').on('mouseup', function(){ 
+    var text = getSelectedText();
+    if (text != '') alert(text); 
+});
+    $('.menu li').mouseover(function() {
+    $('.menu_add').show();
+    });
+        $('.menu li').mouseout(function() {
+        setTimeout(function() {  if ($('.menu_add li:hover').length==0 && $('.menu li:hover').length==0) { $('.menu_add').hide();}},100);
+    });
+    });
+    </script>
+
+
+<script>
+$(document).ready(function() {
+    $( "#slider" ).slider({
+	range: true,
+	values: [ 17, 67 ]
+});
+    });
+    
+</script>
+
+</html> 

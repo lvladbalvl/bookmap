@@ -1,0 +1,265 @@
+<!DOCTYPE HTML>
+{% load staticfiles %}
+<html>
+<head>
+<meta charset="windows-1251"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href={% static "style.css" %} /> 
+<link rel="stylesheet" type="text/css" href={% static "jquery-ui.css" %} />
+ <!--<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'> -->
+<title>{{bookmap.book}}</title>
+</head>
+
+<body>
+<header>
+	<div class="center-block-main">
+    </div>
+    <h1>{{bookmap.book}}</h1>
+    <h3>{{test}}</h3>
+    <div class="hero">{% include "hero.html" %}</div>
+
+</header>
+<div id="slider"></div>
+<div class="center-block-main content">
+	<main>
+    <div id="time"> </div>
+        <canvas id="dz" width="1080" height="792"></canvas>
+        <canvas id="d" width="1080" height="792"></canvas>
+    	<article>
+        <div class="bookPage" data-page="1" data-startPoint="{{startPoint}}" data-endPoint="{{endPoint}}">
+            {{text}}
+        </div>
+        </article>
+    </main>
+    
+    <div class="clr"></div>
+    
+    <div class="pager clearfix">
+    	<p class="previous-link">&larr; <a href="#">Previous</a></p>
+        <p class="next-link"><a href="#">Next</a> &rarr;</p>
+    </div>
+</div>
+
+<footer>
+	<div class="center-block-main">
+        <p>&copy; 2016 Blogin.com  -  All Rights Reserved  -  Find more free Templates at Pixelhint.com</p>
+    </div>
+</footer>
+<script src={% static "jquery-3.1.1.min.js" %}></script>
+<script src={% static "jquery-ui.js" %}></script>
+<script src={% static "getCookie.js" %}></script>
+<script>
+$(document).ready(function() {
+    $("#dz").css('z-index',2);
+    $("#dz").css('position','absolute');
+    var dz_filled = false;
+    var csrftoken = getCookie('csrftoken');
+    var d_canvas = document.getElementById("d");
+    var context = d_canvas.getContext("2d");
+    var dz_canvas = document.getElementById("dz");
+    var zcontext = dz_canvas.getContext("2d");
+    var map = new Image();
+    var currPoint={};
+    map.src = "{{bookmap.map.url}}";
+    map.onload = function() {
+    context.drawImage(map, 0, 0);
+    };
+    $("#dz").click(function(event) {
+        Rx=$(this).position().left;
+        Ry=$(this).position().top;
+        zcontext.clearRect(0,0,$(this).width(),$(this).height());
+        zcontext.beginPath();
+        zcontext.moveTo(event.pageX-Rx,event.pageY-Ry);
+        zcontext.arc(event.pageX-Rx,event.pageY-Ry,7,0,Math.PI*2);
+        zcontext.fillStyle="blue";
+        zcontext.fill();
+        zcontext.closePath();
+        currPoint.x=event.pageX-Rx;
+        currPoint.y=event.pageY-Ry;
+        dz_filled = true;
+    });
+    $( "#slider" ).slider({
+	range: false,
+    min:0,
+    max:1000,
+    step:{{step}},
+	value: 0,
+    change: function( event, ui ) {
+        var data ={};
+        data["type"]="sliderChange";
+        data["time"]=ui.value | 0;
+        $.ajax({
+            url:'#',
+            type:"POST",
+            data:data,
+            dataType:"json",
+            headers:{"X-CSRFToken": csrftoken},
+            success:function(data){
+                $("#time").text(data["timeName"]);
+            },
+            error:function(data){
+                return(false);
+            }
+        });
+    }
+});
+    $("header>h1").click(function() {
+        alert($("#slider").slider("value"));
+    });
+    $(".ui-slider-handle").dblclick(function() {
+            var data ={};
+        if (($("#slider").slider("value"))&&($("#slider").slider("value")!=1000)) {
+            data['type']="time";
+            data['name'] = prompt("Name the Time, please");
+            var newStep=$("#slider").slider("option","max")/($("#slider").slider("option","max")/$("#slider").slider("option","step")+1);
+            data['time'] = $("#slider").slider("value") % newStep + $("#slider").slider("value") | 0;
+            alert(data['time']);
+            } else if (($("#slider").slider("value")==1000)&&($("#slider").slider("option","step")==1000)) {
+            data['type']="time";
+            data['name'] = prompt("Name the Time, please");
+            data['time'] = $("#slider").slider("option","step")/2;
+            }
+            $.ajax({
+                url:'#',
+                type:"POST",
+                data:data,
+                dataType:"json",
+                headers:{"X-CSRFToken": csrftoken},
+                success:function(data){
+                    var newStep=$("#slider").slider("option","max")/($("#slider").slider("option","max")/$("#slider").slider("option","step")+1);
+                    $("#slider").slider("option","step", newStep);
+                },
+                error:function(data){
+                    return(false);
+                }
+            });
+
+        });
+    if ($("#slider").slider("option","step")==1000) {
+        var data ={};
+        data['type']="time";
+        data['name']=prompt("Name the First Time, please");
+        data['time']=0;
+        $.ajax({
+            url:'#',
+            type:"POST",
+            data:data,
+            dataType:"json",
+            headers:{"X-CSRFToken": csrftoken},
+            success:function(data){
+            },
+            error:function(data){
+                return(false);
+            }
+        });
+        data ={};
+        data['type']="time";
+        data['name']="END";
+        data['time']=1000;
+        $.ajax({
+            url:'#',
+            type:"POST",
+            data:data,
+            dataType:"json",
+            headers:{"X-CSRFToken": csrftoken},
+            success:function(data){
+            },
+            error:function(data){
+                return(false);
+            }
+        });
+    }
+    $(window).bind('keydown', function(event) {
+    if (event.ctrlKey || event.metaKey) {
+        switch (String.fromCharCode(event.which).toLowerCase()) {
+        case 's':
+            event.preventDefault();
+            if (dz_filled&&(window.getSelection())) {
+                var data ={};
+                data['type']="addPoint";
+                data['place']= prompt("Name the place, please");
+                data['time']=$("#slider").slider("value") | 0;
+                data['name']=$("#hero option:selected").text();
+                data['x']=currPoint.x;
+                data['y']=currPoint.y;
+                data['text']=window.getSelection().toString();
+                data['page']=$(".bookPage").attr("data-page");
+                alert(data['text'])
+                $.ajax({
+                    url:'#',
+                    type:"POST",
+                    data:data,
+                    dataType:"json",
+                    headers:{"X-CSRFToken": csrftoken},
+                    success:function(data){
+                    alert(data["success"]);
+                    },
+                    error:function(data){
+                        return(false);
+                    }
+                });
+            }
+            break;
+        case 'f':
+            event.preventDefault();
+            alert('ctrl-f');
+            break;
+        case 'h':
+            event.preventDefault();
+            alert('ctrl-h');
+            break;
+        }
+    }
+});
+        $(".next-link").click(function(){
+            var data={};
+            data['type']="changePage";
+            data['direction']="next";
+            data['page']=$(".bookPage").attr("data-page");
+            data['prevEnd']=$(".bookPage").attr("data-endPoint") | 0;
+            alert(data['prevPoint'])
+            $.ajax({
+                url:'#',
+                type:"POST",
+                data:data,
+                dataType:"json",
+                headers:{"X-CSRFToken": csrftoken},
+                success:function(data){
+                    $(".bookPage").attr("data-page",parseInt($(".bookPage").attr("data-page")) +1);
+                    $(".bookPage").text(data["text"])
+                    $(".bookPage").attr("data-endPoint",data["endPoint"])
+                    $(".bookPage").attr("data-startPoint",data["startPoint"])
+                },
+                error:function(data){
+                    return(false);
+                }
+            });
+        });
+        $(".previous-link").click(function(){
+            var data={};
+            data['type']="changePage";
+            data['direction']="prev";
+            data['page']=$(".bookPage").attr("data-page");
+            data['prevEnd']=$(".bookPage").attr("data-endPoint") | 0;
+            data['prevStart']=$(".bookPage").attr("data-startPoint") | 0;
+            $.ajax({
+                url:'#',
+                type:"POST",
+                data:data,
+                dataType:"json",
+                headers:{"X-CSRFToken": csrftoken},
+                success:function(data){
+                    $(".bookPage").attr("data-page",parseInt($(".bookPage").attr("data-page"))-1);
+                    $(".bookPage").text(data["text"])
+                    $(".bookPage").attr("data-startPoint",data["startPoint"])
+                    $(".bookPage").attr("data-endPoint",data["endPoint"])
+                },
+                error:function(data){
+                    return(false);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
